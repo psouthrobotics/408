@@ -10,13 +10,10 @@ public class Claw extends OpMode {
     //drive motors
     DcMotor leftMotor;
     DcMotor rightMotor;
-    //claw motors
-    DcMotor leftMClaw;
-    DcMotor rightMClaw;
+    //rack and pinion motor
+    DcMotor pinion;
     //claw servos
     Servo sideSClaw;
-    Servo releaseServo1;
-    Servo releaseServo2;
 
     //drive values
     double left;
@@ -36,15 +33,10 @@ public class Claw extends OpMode {
         //Mapping physical motors to variable
         leftMotor = hardwareMap.dcMotor.get("left_Motor");
         rightMotor = hardwareMap.dcMotor.get("right_Motor");
-        leftMClaw = hardwareMap.dcMotor.get("left_claw_motor");
-        rightMClaw = hardwareMap.dcMotor.get("right_claw_motor");
         sideSClaw = hardwareMap.servo.get("sideServo");
-
-        //mapping gyro to phyisciacl gyro
+        pinion = hardwareMap.dcMotor.get("rack");
         //scale value
         a = 5;
-        releaseServo1 = hardwareMap.servo.get("rs1");
-        releaseServo2 = hardwareMap.servo.get("rs2");
 
     }
 
@@ -62,15 +54,6 @@ public class Claw extends OpMode {
         //set drive values for motors
         leftMotor.setPower(left);
         rightMotor.setPower(right);
-        //assigning power for claw motors
-        leftM = -gamepad2.left_stick_y;
-        rightM = -gamepad2.right_stick_y;
-        //clipping values to not exceed the maximum value for the motor
-        leftM = Range.clip(leftM, -1, 1);
-        rightM = Range.clip(rightM, -1, 1);
-        //actually driving mototors.
-        leftMClaw.setPower(rightM);
-        rightMClaw.setPower(leftM);
 
         //moving side servo
         if (gamepad1.b) {
@@ -78,14 +61,6 @@ public class Claw extends OpMode {
         }
         if (gamepad1.x) {
             sideSClaw.setPosition(0.6);
-        }
-        if (gamepad1.y){
-            releaseServo1.setPosition(0);
-            releaseServo2.setPosition(0);
-        }
-        if (gamepad1.a){
-            releaseServo1.setPosition(0.6);
-            releaseServo2.setPosition(0);
         }
 
         //telemetry
