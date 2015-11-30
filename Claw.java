@@ -55,6 +55,13 @@ public class Claw extends OpMode {
         leftMotor.setPower(left);
         rightMotor.setPower(right);
 
+        //pinion movement
+        if (gamepad2.left_bumper){
+            pinion.setPower(-0.5);
+        }
+        if (gamepad2.left_trigger >= 0.8){
+            pinion.setPower(0.5);
+        }
         //moving side servo
         if (gamepad1.b) {
             sideSClaw.setPosition(0);
