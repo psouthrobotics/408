@@ -52,46 +52,27 @@ public class AutoClaw extends LinearOpMode {
         double rmotorLeft;
         double lmotorLeft;
         //straight value for gyro
-        straight = 602;
-        kp = 5;
+        straight = 599;
+        kp = 2 ;
         //the speed for the robot to drive forward as a percentage
         drive_speed = -0.7;
         //set initial speed for robot
         leftMotor.setPower(drive_speed);
         rightMotor.setPower(drive_speed);
+        rightMotor.setDirection(DcMotor.Direction.REVERSE);
         //error from setpoint to actual value according to the gyro
-        error = 600 - gyro.getRotation();
+        //positive error if turning left neg if right
+        error = straight - gyro.getRotation();
         //creating proportional part of pid loop
         p = kp * error;
-        p = p / 200;
+        p = p / 50;
+        if (p > 0.05){
+
+        }
+
         //right correction drive values
-        rmotorRight = drive_speed - p;
-        lmotorRight = drive_speed + p;
-        //left correction drive values
-        rmotorLeft = drive_speed - p;
-        lmotorLeft = drive_speed + p;
-        //clipping vlaues to not exceed 1
-        if (rmotorLeft > 1){
-            rmotorLeft = 1;
-        }
-        if (lmotorLeft > 1){
-            lmotorLeft = 1;
-        }
-        if (rmotorRight > 1){
-            rmotorRight = 1;
-        }
-        if (lmotorRight > 1){
-            lmotorRight = 1;
-        }
-        if (gyro.getRotation() >= straight){
-            rightMotor.setPower(Range.clip(rmotorRight, -1, 1));
-            leftMotor.setPower(Range.clip(lmotorRight, -1, 1));
-        }
-        if (gyro.getRotation() <= straight){
-            rightMotor.setPower(Range.clip(rmotorLeft, -1, 1));
-            leftMotor.setPower(Range.clip(lmotorLeft, -1, 1));
-        }
         telemetry.addData("pro", p);
+        telemetry.addData("gyro", gyro.getRotation());
 
     }
 
