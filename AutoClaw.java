@@ -4,9 +4,12 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.GyroSensor;
+import com.qualcomm.robotcore.hardware.CompassSensor
 import com.qualcomm.robotcore.util.Range;
 
-
+//TO DO
+//CLIP DRIVE VALUES TO 1 AND -1
+//DO WHILE LOOP RATHER THAN WHILE
 public class AutoClaw extends LinearOpMode {
 
     //drive motors
@@ -17,6 +20,8 @@ public class AutoClaw extends LinearOpMode {
     Servo releaseServo2;
     //gyro sensor
     GyroSensor gyro;
+    //compass
+    CompassSensor compass;
 
 
     @Override
@@ -26,9 +31,11 @@ public class AutoClaw extends LinearOpMode {
         rightMotor = hardwareMap.dcMotor.get("right_Motor");
         //assigning the hardware gyro to a variable
         gyro = hardwareMap.gyroSensor.get("gy");
+        compass = hardwareMap.compassSensor.get("comp");
 
         waitForStart();
         while (opModeIsActive()) {
+            compass.getDirection();
             drive_forward();
         }
     }
@@ -72,6 +79,71 @@ public class AutoClaw extends LinearOpMode {
         while (java.util.Date.getTime() - start_time < t){
             //error is the rotaion error
             error = straight - gyro.getRotation;
+            //dividing errror because motor speed is in percentage
+            error = error / 10;
+            //proportional which is just error
+            proportional = error;
+            //intergral art of loop- error over time
+            intergral = intergral + error * dt;
+            //derivitive which uses slope to correct future error
+            derivitive = (error -  previous_error) / dt;
+            //suming together to create complete correction value
+            PID = kp * proportional + ki * intergral + kd * derivitive;
+            //applying corrections to driving
+            leftMotor.setPower(ld_speed + PID);
+            rightMotor.setPower(rd_speed - PID)
+            //setting vlues for next loop
+            previous_error = error;
+            ld_speed = ld_speed + PID;
+            rd_speed = rd_speed - PID;
+            //telemetry stuff
+            telemetry.addData("pro", proportional);
+            telemetry.addData("int", intergral);
+            telemetry.addData("der", derivitive);
+            telemetry.adddata("gyro", gyro.getRotation());
+            telemetry.addData("error", error)
+
+            sleep(dt);
+        }
+
+    }
+    public void turn_r(double a){
+        //reversing because its on oppisite side
+        leftMotor.setDirection(DcMotor.Direction.REVERSE);
+        //defining variables
+        double kp;
+        double ki;
+        double kd;
+        double error;
+        double previous_error;
+        double proportional;
+        double intergral;
+        double derivitive;
+        double ld_speed;
+        double rd_speed;
+        double dt;
+        double PID;
+        //setting drive speed
+        ld_speed = 0.5;
+        rd_speed = 0.5;
+        //how often to run the loop
+        dt = 200;
+        //coefficients for PID loop
+        kp = 1;
+        ki = 2;
+        kd = 3;
+        //setting variables to zero to use in first loop round
+        intergral = 0;
+        previous_error = 0;
+        //driving initial values
+        rd_speed = -rd_speed;
+        leftMotor.setPower(ld_speed);
+        rightMotor.setPower(rd_speed);
+        //initial compass value to comoare
+        origin = compass.getDirection
+        while ((compass.getDirection() - origin) != t){
+            //error is the rotaion error
+            error = t - (compass.getDirection() - origin);
             //dividing errror because motor speed is in percentage
             error = error / 10;
             //proportional which is just error
@@ -170,5 +242,8 @@ public class AutoClaw extends LinearOpMode {
             case "t":
                 //add pis loop to use compass when turn is specified
         }
+    }
+    public void compass_cal(){
+        //FIGURE OUT HOW TO CALIBRATE COMPASS
     }
 }
