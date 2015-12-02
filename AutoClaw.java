@@ -41,38 +41,72 @@ public class AutoClaw extends LinearOpMode {
             drive_forward();
         }
     }
-    public void drive_forward() {
-        double error;
+    public void drive_forward(double t) {
+        //reversing because its on oppisite side
+        leftMotor.setDirection(DcMotor.Direction.REVERSE);
+        //defining variables
         double kp;
-        double p;
-        double drive_speed;
+        double ki;
+        double kd;
+        double error;
+        double previous_error;
+        double proportional;
+        double intergral;
+        double derivitive;
+        double start_time;
+        double ld_speed;
+        double rd_speed;
         double straight;
-        double rmotorRight;
-        double lmotorRight;
-        double rmotorLeft;
-        double lmotorLeft;
-        //straight value for gyro
-        straight = 599;
-        kp = 2 ;
-        //the speed for the robot to drive forward as a percentage
-        drive_speed = -0.7;
-        //set initial speed for robot
-        leftMotor.setPower(drive_speed);
-        rightMotor.setPower(drive_speed);
-        rightMotor.setDirection(DcMotor.Direction.REVERSE);
-        //error from setpoint to actual value according to the gyro
-        //positive error if turning left neg if right
-        error = straight - gyro.getRotation();
-        //creating proportional part of pid loop
-        p = kp * error;
-        p = p / 50;
-        if (p > 0.05){
+        double dt;
+        double PID;
+        //setting straight value
+        straight = 600;
+        //setting drive speed
+        ld_speed = 0.5;
+        rd_speed = 0.5;
+        //how often to run the loop
+        dt = 200;
+        //coefficients for PID loop
+        kp = 1;
+        ki = 2;
+        kd = 3;
+        //start time to compare against
+        start_time = java.util.Date.getTime();
+        //setting variables to zero to use in first loop round
+        intergral = 0;
+        previous_error = 0;
+        //driving initial values
+        leftMotor.setPower(ld_speed);
+        rightMotor.setPower(rd_speed);
+        while (java.util.Date.getTime() - start_time < t){
+            //error is the rotaion error
+            error = straight - gyro.getRotation;
+            //dividing errror because motor speed is in percentage
+            error = error / 10;
+            //proportional which is just error
+            proportional = error;
+            //intergral art of loop- error over time
+            intergral = intergral + error * dt;
+            //derivitive which uses slope to correct future error
+            derivitive = (error -  previous_error) / dt;
+            //suming together to create complete correction value
+            PID = kp * proportional + ki * intergral + kd * derivitive;
+            //applying corrections to driving
+            leftMotor.setPower(ld_speed + PID);
+            rightMotor.setPower(rd_speed - PID)
+            //setting vlues for next loop
+            previous_error = error;
+            ld_speed = ld_speed + PID;
+            rd_speed = rd_speed - PID;
+            //telemetry stuff
+            telemetry.addData("pro", proportional);
+            telemetry.addData("int", intergral);
+            telemetry.addData("der", derivitive);
+            telemetry.adddata("gyro", gyro.getRotation());
+            telemetry.addData("error", error)
 
+            sleep(dt);
         }
-
-        //right correction drive values
-        telemetry.addData("pro", p);
-        telemetry.addData("gyro", gyro.getRotation());
 
     }
 
