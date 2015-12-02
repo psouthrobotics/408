@@ -6,23 +6,26 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 
 public class Claw extends OpMode {
-
     //drive motors
     DcMotor leftMotor;
     DcMotor rightMotor;
     //rack and pinion motor
     DcMotor pinion;
+    //claw roation
+    DcMotor claw;
     //claw servos
     Servo sideSClaw;
-
     //drive values
     double left;
     double right;
+    double pinion_power;
+    double claw_power;
     //drive values for claw
     double leftM;
     double rightM;
     //scale for expo
     double a;
+
 
 
 
@@ -33,6 +36,7 @@ public class Claw extends OpMode {
         //Mapping physical motors to variable
         leftMotor = hardwareMap.dcMotor.get("left_Motor");
         rightMotor = hardwareMap.dcMotor.get("right_Motor");
+        claw = hardwareMap.dcMotor.get("claw");
         sideSClaw = hardwareMap.servo.get("sideServo");
         pinion = hardwareMap.dcMotor.get("rack");
         //scale value
@@ -52,34 +56,27 @@ public class Claw extends OpMode {
         expoL();
         expoR();
         //set drive values for motors
-        leftMotor.setPower(left);
+        leftMotor.setPower(-left);
         rightMotor.setPower(right);
 
         //pinion movement
-        if (gamepad2.left_bumper){
-            pinion.setPower(-0.5);
-        }
-        if (gamepad2.left_trigger >= 0.8){
-            pinion.setPower(0.5);
-        }
+        pinion_power = gamepad2.left_stick_y;
+        pinion.setPower(pinion_power);
+        claw_power = gamepad2.right_stick_y;
+        claw.setPower(claw_power);
+
         //moving side servo
-        if (gamepad1.b) {
+        if (gamepad2.b) {
             sideSClaw.setPosition(0);
         }
-        if (gamepad1.x) {
+        if (gamepad2.x)  {
             sideSClaw.setPosition(0.6);
         }
 
         //telemetry
         telemetry.addData("Left Motor power", left);
 		telemetry.addData("Right Motor power", right);
-
-
-
-
-
-
-
+        telemetry.addData("pinion power", pinion_power);
     }
     //scale left drive value
     public void expoL() {
