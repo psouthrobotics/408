@@ -2,6 +2,7 @@ package com.qualcomm.ftcrobotcontroller.opmodes;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.CompassSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 
@@ -15,6 +16,8 @@ public class Claw extends OpMode {
     DcMotor claw;
     //claw servos
     Servo sideSClaw;
+    //compass
+    CompassSensor compass;
     //drive values
     double left;
     double right;
@@ -39,8 +42,10 @@ public class Claw extends OpMode {
         claw = hardwareMap.dcMotor.get("claw");
         sideSClaw = hardwareMap.servo.get("sideServo");
         pinion = hardwareMap.dcMotor.get("rack");
+        compass = hardwareMap.compassSensor.get("compass");
         //scale value
         a = 5;
+        compass.setMode(CompassSensor.CompassMode.CALIBRATION_MODE);
 
     }
 
@@ -63,7 +68,7 @@ public class Claw extends OpMode {
         pinion_power = gamepad2.left_stick_y;
         pinion.setPower(pinion_power);
         claw_power = gamepad2.right_stick_y;
-        claw.setPower(claw_power);
+        claw.setPower(gamepad2.right_stick_y);
 
         //moving side servo
         if (gamepad2.b) {
@@ -76,7 +81,10 @@ public class Claw extends OpMode {
         //telemetry
         telemetry.addData("Left Motor power", left);
 		telemetry.addData("Right Motor power", right);
-        telemetry.addData("pinion power", pinion_power);
+        telemetry.addData("rotation power", pinion_power);
+        telemetry.addData("Extension power", claw_power);
+        telemetry.addData("compass calibration", compass.calibrationFailed());
+        telemetry.addData("compass data", compass.getDirection());
     }
     //scale left drive value
     public void expoL() {

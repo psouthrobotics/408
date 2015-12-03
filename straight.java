@@ -1,15 +1,16 @@
 package com.qualcomm.ftcrobotcontroller.opmodes;
 
-import android.renderscript.ScriptIntrinsicYuvToRGB;
-
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.GyroSensor;
 import com.qualcomm.robotcore.hardware.CompassSensor;
 import com.qualcomm.robotcore.util.Range;
-
+//ROBOT STATS
+//Speed- 26.90fps
 //TO DO
-public class AutoClaw extends LinearOpMode {
+//CLIP DRIVE VALUES TO 1 AND -1
+//DO WHILE LOOP RATHER THAN WHILE
+public class straight extends LinearOpMode {
     //drive motors
     DcMotor leftMotor;
     DcMotor rightMotor;
@@ -19,21 +20,25 @@ public class AutoClaw extends LinearOpMode {
     CompassSensor compass;
 
 
-
     @Override
     public void runOpMode() throws InterruptedException {
         //assign hardware to objects
         leftMotor = hardwareMap.dcMotor.get("left_Motor");
         rightMotor = hardwareMap.dcMotor.get("right_Motor");
-        //assigning the hardware gyro to a variable
+        //assigning the hardware gyro to a variable and compass
         gyro = hardwareMap.gyroSensor.get("gy");
         compass = hardwareMap.compassSensor.get("compass");
-
+        //reversing right wheel to drive straight
         rightMotor.setDirection(DcMotor.Direction.REVERSE);
+
+        //calibrating compass
+        compass.setMode(CompassSensor.CompassMode.CALIBRATION_MODE);
+        telemetry.addData("Compass", "Compass in calibration mode");
+        sleep(1000);
 
         waitForStart();
         while (opModeIsActive()) {
-            pivot('r', 200);
+            drive_forward(1000);
 
         }
     }
@@ -44,26 +49,9 @@ public class AutoClaw extends LinearOpMode {
             case 'r':
 
                 while (System.currentTimeMillis() - start_time < t) {
-                    leftMotor.setPower(0.2);
-                    rightMotor.setPower(-0.7);
+                    leftMotor.setPower(0.5);
+                    rightMotor.setPower(-0.5);
                 }
-
-            case 'l':
-
-                while (System.currentTimeMillis() - start_time < t) {
-                   leftMotor.setPower(-0.2);
-                   rightMotor.setPower(0.7);
-                }
-
-        }
-
-    }
-    public void turn (char z, double t){
-        double start_time;
-        start_time = System.currentTimeMillis();
-        switch(z){
-            case 'r':
-
 
             case 'l':
 
@@ -75,7 +63,35 @@ public class AutoClaw extends LinearOpMode {
         }
 
     }
-    public void  drive_forward(double t) throws InterruptedException{
+    //d is distance of inner wheel
+    //t is distance of outer wheel
+    public void turn(char z, double d, double t){
+        double start_time;
+        double fps;
+        double circumfrince1;
+        double circumfrince2;
+        double a1;
+        //a2 is outside arc
+        double a2;
+
+        //speeed of robot
+        fps = 26.90;
+        circumfrince1 = 0.25*(3.1459*(2*d));
+        circumfrince2 = 0.25*(3.1459*(2*t));
+
+
+        start_time = System.currentTimeMillis();
+        switch(z){
+            case 'r':
+
+
+            case 'l':
+
+
+        }
+
+    }
+        public void drive_forward(double t) throws InterruptedException{
         //reversing because its on oppisite side
 
         //defining variables

@@ -58,6 +58,9 @@ public class FtcOpModeRegister implements OpModeRegister {
     //manager.register("NullOp", NullOp.class);
       manager.register("Claw", Claw.class);
       manager.register("AutoClaw", AutoClaw.class);
+      manager.register("straight", straight.class);
+      manager.register("left", left.class);
+      manager.register("right", right.class);
       manager.register("Gyro", gyro.class);
       manager.register("compass", CompassCalibration.class);
 

@@ -4,20 +4,20 @@ import android.renderscript.ScriptIntrinsicYuvToRGB;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.GyroSensor;
 import com.qualcomm.robotcore.hardware.CompassSensor;
 import com.qualcomm.robotcore.util.Range;
 
 //TO DO
-public class AutoClaw extends LinearOpMode {
+//CLIP DRIVE VALUES TO 1 AND -1
+//DO WHILE LOOP RATHER THAN WHILE
+public class left extends LinearOpMode {
     //drive motors
     DcMotor leftMotor;
     DcMotor rightMotor;
     //gyro sensor
     GyroSensor gyro;
-    //compass sensor
-    CompassSensor compass;
-
 
 
     @Override
@@ -27,13 +27,12 @@ public class AutoClaw extends LinearOpMode {
         rightMotor = hardwareMap.dcMotor.get("right_Motor");
         //assigning the hardware gyro to a variable
         gyro = hardwareMap.gyroSensor.get("gy");
-        compass = hardwareMap.compassSensor.get("compass");
 
         rightMotor.setDirection(DcMotor.Direction.REVERSE);
 
         waitForStart();
         while (opModeIsActive()) {
-            pivot('r', 200);
+            pivot('l', 200);
 
         }
     }
@@ -44,26 +43,9 @@ public class AutoClaw extends LinearOpMode {
             case 'r':
 
                 while (System.currentTimeMillis() - start_time < t) {
-                    leftMotor.setPower(0.2);
-                    rightMotor.setPower(-0.7);
+                    leftMotor.setPower(0.5);
+                    rightMotor.setPower(-0.5);
                 }
-
-            case 'l':
-
-                while (System.currentTimeMillis() - start_time < t) {
-                   leftMotor.setPower(-0.2);
-                   rightMotor.setPower(0.7);
-                }
-
-        }
-
-    }
-    public void turn (char z, double t){
-        double start_time;
-        start_time = System.currentTimeMillis();
-        switch(z){
-            case 'r':
-
 
             case 'l':
 
@@ -75,7 +57,7 @@ public class AutoClaw extends LinearOpMode {
         }
 
     }
-    public void  drive_forward(double t) throws InterruptedException{
+    public void drive_forward(double t) throws InterruptedException{
         //reversing because its on oppisite side
 
         //defining variables
