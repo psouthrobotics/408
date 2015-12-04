@@ -1,7 +1,5 @@
 package com.qualcomm.ftcrobotcontroller.opmodes;
 
-import android.renderscript.ScriptIntrinsicYuvToRGB;
-
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.GyroSensor;
@@ -9,6 +7,7 @@ import com.qualcomm.robotcore.hardware.CompassSensor;
 import com.qualcomm.robotcore.util.Range;
 
 //TO DO
+//29in/s
 public class AutoClaw extends LinearOpMode {
     //drive motors
     DcMotor leftMotor;
@@ -32,12 +31,18 @@ public class AutoClaw extends LinearOpMode {
         rightMotor.setDirection(DcMotor.Direction.REVERSE);
 
         waitForStart();
-        while (opModeIsActive()) {
-            pivot('r', 200);
+        //less than 600 is left more than right
+        //straight is 600
+        drive(1000, 600);
+        drive(500, 500);
+        drive_stop();
 
-        }
     }
-    public void pivot(char z, double t){
+    public void drive_stop(){
+        leftMotor.setPower(0);
+        rightMotor.setPower(0);
+    }
+    /*public void pivot(char z, double t){
         double start_time;
         start_time = System.currentTimeMillis();
         switch(z){
@@ -58,24 +63,9 @@ public class AutoClaw extends LinearOpMode {
         }
 
     }
-    public void turn (char z, double t){
-        double start_time;
-        start_time = System.currentTimeMillis();
-        switch(z){
-            case 'r':
-
-
-            case 'l':
-
-                while (System.currentTimeMillis() - start_time < t) {
-                    leftMotor.setPower(-0.5);
-                    rightMotor.setPower(0.5);
-                }
-
-        }
-
-    }
-    public void  drive_forward(double t) throws InterruptedException{
+    */
+    //x is direction
+    public void  drive(double t, double x) throws InterruptedException{
         //reversing because its on oppisite side
 
         //defining variables
@@ -94,16 +84,16 @@ public class AutoClaw extends LinearOpMode {
         long dt;
         double PID;
         //setting straight value
-        straight = 600;
+        straight = x;
         //setting drive speed
-        ld_speed = 0.9;
-        rd_speed = 0.9;
+        ld_speed = 0.8;
+        rd_speed = 0.8;
         //how often to run the loop
-        dt = 200;
+        dt = 2;
         //coefficients for PID loop
-        kp = 1;
-        ki = 2;
-        kd = 3;
+        kp = 0;
+        ki = 0;
+        kd = 0;
         //start time to compare against
         start_time = System.currentTimeMillis();
         //setting variables to zero to use in first loop round
@@ -140,6 +130,7 @@ public class AutoClaw extends LinearOpMode {
             telemetry.addData("der", derivitive);
             telemetry.addData("gyro", gyro.getRotation());
             telemetry.addData("error", error);
+            telemetry.addData("Compass", compass.getDirection());
 
             sleep(dt);
         }
