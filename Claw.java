@@ -62,9 +62,12 @@ public class Claw extends OpMode {
 
         //pinion movement
         pinion_power = -gamepad2.left_stick_y;
-        pinion.setPower(pinion_power);
         expoP();
+        pinion_power = Range.clip(pinion_power, -1, 1);
+        pinion.setPower(pinion_power);
+
         claw_power = -gamepad2.right_stick_y;
+        claw_power = Range.clip(claw_power, -1, 1);
         expoC();
         claw.setPower(gamepad2.right_stick_y);
 

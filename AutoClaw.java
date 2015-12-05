@@ -33,13 +33,19 @@ public class AutoClaw extends LinearOpMode {
         compass = hardwareMap.compassSensor.get("compass");
 
         rightMotor.setDirection(DcMotor.Direction.REVERSE);
-        
+
         waitForStart();
         //less than 600 is left more than right
         //straight is 600
 
         drive(1000, 600);
-        drive(4000, 800);
+        drive(4000, 900);
+        pinion.setPower(-0.2);
+        claw.setPower(0.2);
+        sleep(1000);
+        pinion.setPower(0);
+        sleep(1000);
+        claw.setPower(0);
         while (opModeIsActive()){
             drive(100, 600);
         }
