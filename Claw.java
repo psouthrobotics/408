@@ -17,7 +17,7 @@ public class Claw extends OpMode {
     CompassSensor compass;
     //drive values
     double left;
-    double right;
+     double right;
     double pinion_power;
     double claw_power;
     //drive values for claw
@@ -57,7 +57,7 @@ public class Claw extends OpMode {
         expoL();
         expoR();
         //set drive values for motors
-        leftMotor.setPower(left);
+        leftMotor.setPower(-left);
         rightMotor.setPower(right);
 
         //pinion movement
@@ -69,7 +69,7 @@ public class Claw extends OpMode {
         claw_power = -gamepad2.right_stick_y;
         claw_power = Range.clip(claw_power, -1, 1);
         expoC();
-        claw.setPower(gamepad2.right_stick_y);
+        claw.setPower(-gamepad2.right_stick_y);
 
         //telemetry
         telemetry.addData("Left Motor power", left);
