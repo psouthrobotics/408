@@ -1,5 +1,5 @@
 package com.qualcomm.ftcrobotcontroller.opmodes;
-
+/*
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.GyroSensor;
@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.util.Range;
 //TO DO
 //29in/s
 public class AutoClaw extends LinearOpMode {
-    //drive motors
+   /* //drive motors
     DcMotor leftMotor;
     DcMotor rightMotor;
     DcMotor claw;
@@ -40,6 +40,7 @@ public class AutoClaw extends LinearOpMode {
 
         drive(1500, 600);
         drive(4000, 1000);
+        claw_pos();
         while (opModeIsActive()){
             leftMotor.setPower(1);
             rightMotor.setPower(1);
@@ -48,81 +49,15 @@ public class AutoClaw extends LinearOpMode {
 
 
     }
-    public void drive_stop(){
-        leftMotor.setPower(0);
-        rightMotor.setPower(0);
-    }
     //x is direction
-    public void  drive(double t, double x) throws InterruptedException{
-        //reversing because its on oppisite side
-
-        //defining variables
-        double kp;
-        double ki;
-        double kd;
-        double error;
-        double previous_error;
-        double proportional;
-        double intergral;
-        double derivitive;
-         double start_time;
-        double ld_speed;
-        double rd_speed;
-        double straight;
-        long dt;
-        double PID;
-        //setting straight value
-        straight = x;
-        //setting drive speed
-        ld_speed = 0.8;
-        rd_speed = 0.8;
-        //how often to run the loop
-        dt = 2;
-        //coefficients for PID loop
-        kp = 3;
-        ki = 3;
-        kd = 3;
-        //start time to compare against
-        start_time = System.currentTimeMillis();
-        //setting variables to zero to use in first loop round
-        intergral = 0;
-        previous_error = 0;
-        //driving initial values
-
-        while (System.currentTimeMillis() - start_time < t) {
-            leftMotor.setPower(ld_speed);
-            rightMotor.setPower(rd_speed);
-            //error is the rotaion error
-            error = straight - gyro.getRotation();
-            //dividing errror because motor speed is in percentage
-            error = error / 100;
-            //proportional which is just error
-            proportional = error;
-            //intergral art of loop- error over time
-            intergral = intergral + error * dt;
-            //derivitive which uses slope to correct future error
-            derivitive = (error - previous_error) / dt;
-            //suming together to create complete correction value
-            PID = kp * proportional + ki * intergral + kd * derivitive;
-            //applying corrections to driving
-            ld_speed = ld_speed + PID;
-            rd_speed = rd_speed - PID;
-            ld_speed = Range.clip(ld_speed, 0, 1);
-            rd_speed = Range.clip(rd_speed, 0 , 1);
-            leftMotor.setPower(ld_speed);
-            rightMotor.setPower(rd_speed);
-            //setting vlues for next loop
-            previous_error = error;
-            //telemetry stuff
-            telemetry.addData("pro", proportional);
-            telemetry.addData("int", intergral);
-            telemetry.addData("der", derivitive);
-            telemetry.addData("gyro", gyro.getRotation());
-            telemetry.addData("error", error);
-            telemetry.addData("Compass", compass.getDirection());
-
-            sleep(dt);
-        }
+    public void  claw_pos() throws InterruptedException{
+        pinion.setPower(0.8);
+        sleep(2250);
+        pinion.setPower(0);
+        claw.setPower(-0.8);
+        sleep(1000);
+        claw.setPower(0);
 
     }
-}
+
+}*/
