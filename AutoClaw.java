@@ -38,16 +38,11 @@ public class AutoClaw extends LinearOpMode {
         //less than 600 is left more than right
         //straight is 600
 
-        drive(1000, 600);
-        drive(4000, 900);
-        pinion.setPower(-0.2);
-        claw.setPower(0.2);
-        sleep(1000);
-        pinion.setPower(0);
-        sleep(1000);
-        claw.setPower(0);
+        drive(1500, 600);
+        drive(4000, 1000);
         while (opModeIsActive()){
-            drive(100, 600);
+            leftMotor.setPower(1);
+            rightMotor.setPower(1);
         }
         drive_stop();
 
@@ -70,7 +65,7 @@ public class AutoClaw extends LinearOpMode {
         double proportional;
         double intergral;
         double derivitive;
-        double start_time;
+         double start_time;
         double ld_speed;
         double rd_speed;
         double straight;
@@ -100,7 +95,7 @@ public class AutoClaw extends LinearOpMode {
             //error is the rotaion error
             error = straight - gyro.getRotation();
             //dividing errror because motor speed is in percentage
-            error = error / 50;
+            error = error / 100;
             //proportional which is just error
             proportional = error;
             //intergral art of loop- error over time
