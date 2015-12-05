@@ -12,6 +12,8 @@ public class AutoClaw extends LinearOpMode {
     //drive motors
     DcMotor leftMotor;
     DcMotor rightMotor;
+    DcMotor claw;
+    DcMotor pinion;
     //gyro sensor
     GyroSensor gyro;
     //compass sensor
@@ -24,46 +26,31 @@ public class AutoClaw extends LinearOpMode {
         //assign hardware to objects
         leftMotor = hardwareMap.dcMotor.get("left_Motor");
         rightMotor = hardwareMap.dcMotor.get("right_Motor");
+        claw = hardwareMap.dcMotor.get("claw");
+        pinion = hardwareMap.dcMotor.get("rack");
         //assigning the hardware gyro to a variable
         gyro = hardwareMap.gyroSensor.get("gy");
         compass = hardwareMap.compassSensor.get("compass");
 
         rightMotor.setDirection(DcMotor.Direction.REVERSE);
-
+        
         waitForStart();
         //less than 600 is left more than right
         //straight is 600
+
         drive(1000, 600);
-        drive(500, 500);
+        drive(4000, 800);
+        while (opModeIsActive()){
+            drive(100, 600);
+        }
         drive_stop();
+
 
     }
     public void drive_stop(){
         leftMotor.setPower(0);
         rightMotor.setPower(0);
     }
-    /*public void pivot(char z, double t){
-        double start_time;
-        start_time = System.currentTimeMillis();
-        switch(z){
-            case 'r':
-
-                while (System.currentTimeMillis() - start_time < t) {
-                    leftMotor.setPower(0.2);
-                    rightMotor.setPower(-0.7);
-                }
-
-            case 'l':
-
-                while (System.currentTimeMillis() - start_time < t) {
-                   leftMotor.setPower(-0.2);
-                   rightMotor.setPower(0.7);
-                }
-
-        }
-
-    }
-    */
     //x is direction
     public void  drive(double t, double x) throws InterruptedException{
         //reversing because its on oppisite side
@@ -91,18 +78,19 @@ public class AutoClaw extends LinearOpMode {
         //how often to run the loop
         dt = 2;
         //coefficients for PID loop
-        kp = 0;
-        ki = 0;
-        kd = 0;
+        kp = 3;
+        ki = 3;
+        kd = 3;
         //start time to compare against
         start_time = System.currentTimeMillis();
         //setting variables to zero to use in first loop round
         intergral = 0;
         previous_error = 0;
         //driving initial values
-        leftMotor.setPower(ld_speed);
-        rightMotor.setPower(rd_speed);
+
         while (System.currentTimeMillis() - start_time < t) {
+            leftMotor.setPower(ld_speed);
+            rightMotor.setPower(rd_speed);
             //error is the rotaion error
             error = straight - gyro.getRotation();
             //dividing errror because motor speed is in percentage
@@ -118,8 +106,8 @@ public class AutoClaw extends LinearOpMode {
             //applying corrections to driving
             ld_speed = ld_speed + PID;
             rd_speed = rd_speed - PID;
-            ld_speed = Range.clip(ld_speed, 0.5, 1);
-            rd_speed = Range.clip(rd_speed, 0.5 , 1);
+            ld_speed = Range.clip(ld_speed, 0, 1);
+            rd_speed = Range.clip(rd_speed, 0 , 1);
             leftMotor.setPower(ld_speed);
             rightMotor.setPower(rd_speed);
             //setting vlues for next loop

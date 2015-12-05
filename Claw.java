@@ -3,7 +3,6 @@ package com.qualcomm.ftcrobotcontroller.opmodes;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.CompassSensor;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 
 public class Claw extends OpMode {
@@ -14,8 +13,6 @@ public class Claw extends OpMode {
     DcMotor pinion;
     //claw roation
     DcMotor claw;
-    //claw servos
-    Servo sideSClaw;
     //compass
     CompassSensor compass;
     //drive values
@@ -40,11 +37,10 @@ public class Claw extends OpMode {
         leftMotor = hardwareMap.dcMotor.get("left_Motor");
         rightMotor = hardwareMap.dcMotor.get("right_Motor");
         claw = hardwareMap.dcMotor.get("claw");
-        sideSClaw = hardwareMap.servo.get("sideServo");
         pinion = hardwareMap.dcMotor.get("rack");
         compass = hardwareMap.compassSensor.get("compass");
         //scale value
-        a = 5;
+        a = 10;
         compass.setMode(CompassSensor.CompassMode.CALIBRATION_MODE);
 
     }
@@ -65,18 +61,12 @@ public class Claw extends OpMode {
         rightMotor.setPower(right);
 
         //pinion movement
-        pinion_power = gamepad2.left_stick_y;
+        pinion_power = -gamepad2.left_stick_y;
         pinion.setPower(pinion_power);
-        claw_power = gamepad2.right_stick_y;
+        expoP();
+        claw_power = -gamepad2.right_stick_y;
+        expoC();
         claw.setPower(gamepad2.right_stick_y);
-
-        //moving side servo
-        if (gamepad2.b) {
-            sideSClaw.setPosition(0);
-        }
-        if (gamepad2.x)  {
-            sideSClaw.setPosition(0.6);
-        }
 
         //telemetry
         telemetry.addData("Left Motor power", left);
@@ -101,5 +91,19 @@ public class Claw extends OpMode {
         i = rightM;
         expo =i/((1+a)*(1-i));
         rightM = expo;
+    }
+    public void expoP() {
+        double expo;
+        double i;
+        i = pinion_power;
+        expo =i/((1+a)*(1-i));
+        pinion_power = expo;
+    }
+    public void expoC() {
+        double expo;
+        double i;
+        i = claw_power;
+        expo =i/((1+a)*(1-i));
+        claw_power = expo;
     }
 }
