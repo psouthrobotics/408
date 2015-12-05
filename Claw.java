@@ -40,7 +40,7 @@ public class Claw extends OpMode {
         pinion = hardwareMap.dcMotor.get("rack");
         compass = hardwareMap.compassSensor.get("compass");
         //scale value
-        a = 10;
+        a = 20;
         compass.setMode(CompassSensor.CompassMode.CALIBRATION_MODE);
 
     }
@@ -57,7 +57,7 @@ public class Claw extends OpMode {
         expoL();
         expoR();
         //set drive values for motors
-        leftMotor.setPower(-left);
+        leftMotor.setPower(left);
         rightMotor.setPower(right);
 
         //pinion movement
