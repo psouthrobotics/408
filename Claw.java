@@ -17,7 +17,7 @@ public class Claw extends OpMode {
     CompassSensor compass;
     //drive values
     double left;
-     double right;
+    double right;
     double pinion_power;
     double claw_power;
     //drive values for claw
@@ -42,6 +42,7 @@ public class Claw extends OpMode {
         //scale value
         a = 20;
         compass.setMode(CompassSensor.CompassMode.CALIBRATION_MODE);
+        rightMotor.setDirection(DcMotor.Direction.FORWARD );
 
     }
 
