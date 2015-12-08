@@ -32,8 +32,25 @@ public abstract class Gyro extends LinearOpMode {
     double x;
     double y;
     double z;
+    double degrees;
+    public double angle;
     //calibrated straight value;
-    double cal_straight;
+    public double cal_straight;
+
+
+    private void track_angle() throws InterruptedException {
+        long dt = 2;
+        while (true){
+            //ratioan in degrees per a second about the z axis of robot
+            degrees =  gyro.getRotation() - cal_straight;
+            angle = angle + degrees * (dt/1000);
+            Thread.sleep(dt);
+        }
+
+    }
+    public double get_angle(){
+        return angle;
+    }
 
     public void gyro_cal() throws InterruptedException{
         a = gyro.getRotation();
