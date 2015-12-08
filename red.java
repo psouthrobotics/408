@@ -15,8 +15,8 @@ public class Red extends Drive {
         waitForStart();
         //less than 600 is left more than right
         //straight is 600
-        go(1200, 600);
-        go(4000, 75);
+        go(1200, 0);
+        go(4000, -525);
         while (opModeIsActive()){
             leftMotor.setPower(1);
             rightMotor.setPower(1);

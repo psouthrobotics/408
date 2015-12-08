@@ -36,7 +36,7 @@ public abstract class Drive extends Gyro {
         ld_speed = 0.8;
         rd_speed = 0.8;
         //how often to run the loop
-        dt = 2;
+        dt = 20;
         //coefficients for PID loop
         kp = 1.5;
         ki = 3;
