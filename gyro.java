@@ -3,7 +3,10 @@ package com.qualcomm.ftcrobotcontroller.opmodes;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.GyroSensor;
 
-public abstract class Gyro extends LinearOpMode {
+public class Gyro extends LinearOpMode implements Runnable{
+    //because i have to
+    public void runOpMode(){}
+
     GyroSensor gyro;
 
     double a;
@@ -37,14 +40,20 @@ public abstract class Gyro extends LinearOpMode {
     //calibrated straight value;
     public double cal_straight;
 
-
-    private void track_angle() throws InterruptedException {
+    //keeps trak of gyro angle in seperate thread
+    public void run() {
         long dt = 2;
+        angle = 0;
         while (true){
             //ratioan in degrees per a second about the z axis of robot
             degrees =  gyro.getRotation() - cal_straight;
             angle = angle + degrees * (dt/1000);
-            Thread.sleep(dt);
+            try{
+                Thread.sleep(dt);
+            }
+            catch (InterruptedException e){
+            }
+
         }
 
     }
