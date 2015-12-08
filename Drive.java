@@ -1,65 +1,20 @@
 package com.qualcomm.ftcrobotcontroller.opmodes;
 
-import android.renderscript.ScriptIntrinsicYuvToRGB;
-
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.GyroSensor;
-import com.qualcomm.robotcore.hardware.CompassSensor;
 import com.qualcomm.robotcore.util.Range;
 
-//TO DO
-//CLIP DRIVE VALUES TO 1 AND -1
-//DO WHILE LOOP RATHER THAN WHILE
-public class right extends LinearOpMode {
+public abstract class Drive extends Gyro {
     //drive motors
     DcMotor leftMotor;
     DcMotor rightMotor;
-    //gyro sensor
-    GyroSensor gyro;
 
-
-    @Override
-    public void runOpMode() throws InterruptedException {
+    //t is time x is direction
+    public void go(double t, double x) throws InterruptedException{
         //assign hardware to objects
         leftMotor = hardwareMap.dcMotor.get("left_Motor");
         rightMotor = hardwareMap.dcMotor.get("right_Motor");
-        //assigning the hardware gyro to a variable
-        gyro = hardwareMap.gyroSensor.get("gy");
-
-        rightMotor.setDirection(DcMotor.Direction.REVERSE);
-
-        waitForStart();
-        while (opModeIsActive()) {
-            pivot('r', 200);
-
-        }
-    }
-    public void pivot(char z, double t){
-        double start_time;
-        start_time = System.currentTimeMillis();
-        switch(z){
-            case 'r':
-
-                while (System.currentTimeMillis() - start_time < t) {
-                    leftMotor.setPower(0.5);
-                    rightMotor.setPower(-0.5);
-                }
-
-            case 'l':
-
-                while (System.currentTimeMillis() - start_time < t) {
-                    leftMotor.setPower(-0.5);
-                    rightMotor.setPower(0.5);
-                }
-
-        }
-
-    }
-    public void drive_forward(double t) throws InterruptedException{
         //reversing because its on oppisite side
-
+        rightMotor.setDirection(DcMotor.Direction.REVERSE);
         //defining variables
         double kp;
         double ki;
@@ -76,29 +31,30 @@ public class right extends LinearOpMode {
         long dt;
         double PID;
         //setting straight value
-        straight = 600;
+        straight =  cal_straight + x;
         //setting drive speed
-        ld_speed = 0.9;
-        rd_speed = 0.9;
+        ld_speed = 0.8;
+        rd_speed = 0.8;
         //how often to run the loop
-        dt = 200;
+        dt = 2;
         //coefficients for PID loop
-        kp = 1;
-        ki = 2;
-        kd = 3;
+        kp = 1.5;
+        ki = 3;
+        kd = 6;
         //start time to compare against
         start_time = System.currentTimeMillis();
         //setting variables to zero to use in first loop round
         intergral = 0;
         previous_error = 0;
         //driving initial values
-        leftMotor.setPower(ld_speed);
-        rightMotor.setPower(rd_speed);
+
         while (System.currentTimeMillis() - start_time < t) {
+            leftMotor.setPower(ld_speed);
+            rightMotor.setPower(rd_speed);
             //error is the rotaion error
             error = straight - gyro.getRotation();
             //dividing errror because motor speed is in percentage
-            error = error / 50;
+            error = error / 200;
             //proportional which is just error
             proportional = error;
             //intergral art of loop- error over time
@@ -110,8 +66,8 @@ public class right extends LinearOpMode {
             //applying corrections to driving
             ld_speed = ld_speed + PID;
             rd_speed = rd_speed - PID;
-            ld_speed = Range.clip(ld_speed, 0.5, 1);
-            rd_speed = Range.clip(rd_speed, 0.5 , 1);
+            ld_speed = Range.clip(ld_speed, 0, 1);
+            rd_speed = Range.clip(rd_speed, 0, 1);
             leftMotor.setPower(ld_speed);
             rightMotor.setPower(rd_speed);
             //setting vlues for next loop
@@ -127,4 +83,10 @@ public class right extends LinearOpMode {
         }
 
     }
+    public void halt(){
+        leftMotor.setPower(0);
+        rightMotor.setPower(0);
+    }
 }
+
+
