@@ -5,7 +5,6 @@ package com.qualcomm.ftcrobotcontroller.opmodes;
 public class Blue extends Drive {
 
 
-
     @Override
     public void runOpMode() throws InterruptedException {
         gyro_cal();

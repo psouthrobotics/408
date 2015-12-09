@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.CompassSensor;
 import com.qualcomm.robotcore.util.Range;
 
-public class Claw extends OpMode {
+public class Tank extends OpMode {
     //drive motors
     DcMotor leftMotor;
     DcMotor rightMotor;
@@ -31,10 +31,8 @@ public class Claw extends OpMode {
         rightMotor = hardwareMap.dcMotor.get("right_Motor");
         leftTank = hardwareMap.dcMotor.get("left_tank");
         rightTank = hardwareMap.dcMotor.get("right_tank");
-        compass = hardwareMap.compassSensor.get("compass");
         //scale value
         a = 20;
-        compass.setMode(CompassSensor.CompassMode.CALIBRATION_MODE);
         leftMotor.setDirection(DcMotor.Direction.REVERSE );
 
     }
@@ -48,19 +46,17 @@ public class Claw extends OpMode {
         left = Range.clip(left, -1, 1);
         right = Range.clip(right, -1, 1);
         //scale drive values for easier controling
-        expoL();
-        expoR();
+        //expoL();
+        //expoR();
         //set drive values for motors
         leftMotor.setPower(left);
         rightMotor.setPower(right);
-        leftTank.setPower(left - 0.02);
-        rightTank.setPower(right - 0.02);
+        leftTank.setPower(left);
+        rightTank.setPower(right);
 
         //telemetry
         telemetry.addData("Left Motor power", left);
 		telemetry.addData("Right Motor power", right);
-        telemetry.addData("compass calibration", compass.calibrationFailed());
-        telemetry.addData("compass data", compass.getDirection());
     }
     //scale left drive value
     public void expoL() {
