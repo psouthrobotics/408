@@ -1,8 +1,5 @@
 package com.qualcomm.ftcrobotcontroller.opmodes;
 
-import com.qualcomm.robotcore.hardware.CompassSensor;
-import com.qualcomm.robotcore.util.Range;
-
 //TO DO
 //29in/s
 public class Red extends Drive {
