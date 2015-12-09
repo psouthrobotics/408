@@ -30,6 +30,8 @@ public abstract class Drive extends Gyro {
         double straight;
         long dt;
         double PID;
+        double angle;
+        double degrees;
         //setting straight value
         straight =  cal_straight + x;
         //setting drive speed
@@ -46,12 +48,16 @@ public abstract class Drive extends Gyro {
         //setting variables to zero to use in first loop round
         intergral = 0;
         previous_error = 0;
-        //driving initial values
+
+        angle = 0;
 
         while (System.currentTimeMillis() - start_time < t) {
             leftMotor.setPower(ld_speed);
             rightMotor.setPower(rd_speed);
             //error is the rotaion error
+            degrees = gyro.getRotation() - cal_straight;
+            angle = angle + degrees * (dt/1000);
+
             error = straight - gyro.getRotation();
             //dividing errror because motor speed is in percentage
             error = error / 200;
