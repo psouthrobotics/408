@@ -7,14 +7,19 @@ public abstract class Drive extends Gyro {
     //drive motors
     DcMotor leftMotor;
     DcMotor rightMotor;
+    DcMotor leftTank;
+    DcMotor rightTank;
 
     //t is time x is direction
     public void go(double t, double x) throws InterruptedException{
         //assign hardware to objects
         leftMotor = hardwareMap.dcMotor.get("left_Motor");
         rightMotor = hardwareMap.dcMotor.get("right_Motor");
+        leftTank = hardwareMap.dcMotor.get("left_tank");
+        rightTank = hardwareMap.dcMotor.get("right_tank");
         //reversing because its on oppisite side
         rightMotor.setDirection(DcMotor.Direction.REVERSE);
+        rightTank.setDirection(DcMotor.Direction.REVERSE);
         //defining variables
         double kp;
         double ki;
@@ -54,6 +59,8 @@ public abstract class Drive extends Gyro {
         while (System.currentTimeMillis() - start_time < t) {
             leftMotor.setPower(ld_speed);
             rightMotor.setPower(rd_speed);
+            leftTank.setPower(ld_speed);
+            rightTank.setPower(rd_speed);
             //error is the rotaion error
             degrees = gyro.getRotation() - cal_straight;
             angle = angle + degrees * (dt/1000);
@@ -82,9 +89,7 @@ public abstract class Drive extends Gyro {
             telemetry.addData("pro", proportional);
             telemetry.addData("int", intergral);
             telemetry.addData("der", derivitive);
-            telemetry.addData("gyro", gyro.getRotation());
-            telemetry.addData("error", error);
-
+            telemetry.addData("Angle", angle);
             sleep(dt);
         }
 
