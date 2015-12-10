@@ -45,7 +45,6 @@ public abstract class Gyro extends LinearOpMode implements Runnable{
         while (true){
             //ratioan in degrees per a second about the z axis of robot
             degrees =  gyro.getRotation() - cal_straight;
-            angle = angle + degrees * (dt/1000);
             try{
                 Thread.sleep(dt);
             }

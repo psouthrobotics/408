@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.lang.Math;
 
 /**
  * An Op Mode that returns the raw Accelerometer sensor values as telemetry
@@ -67,6 +68,10 @@ public class AccelerometerOp extends OpMode implements SensorEventListener {
     * This method will be called repeatedly in a loop
     * @see com.qualcomm.robotcore.eventloop.opmode.OpMode#loop()
     */
+    double vector;
+    double y;
+    double x;
+    double z;
     @Override
     public void loop() {
 //        telemetry.addData("1 Start", "AccelerometerOp started at " + startDate);
@@ -74,6 +79,17 @@ public class AccelerometerOp extends OpMode implements SensorEventListener {
         telemetry.addData("x-axis",  acceleration[0]);
         telemetry.addData("y-axis",  acceleration[1]);
         telemetry.addData("z-axis",  acceleration[2]);
+        //this solves for the force vector;
+        vector = Math.sqrt((acceleration[0] * acceleration[0]) * (acceleration[1] * acceleration[1]) * (acceleration[2] * acceleration[2]));
+        telemetry.addData("Vector Force", vector);
+        //angle from x axis to vector
+        x = Math.acos(x/vector);
+        y = Math.acos(y/vector);
+        z = Math.acos(z/vector);
+        telemetry.addData("X angle", x);
+        telemetry.addData("Y angle", y);
+        telemetry.addData("Z angle", z);
+
     }
 
     /*
