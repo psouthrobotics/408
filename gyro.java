@@ -3,7 +3,7 @@ package com.qualcomm.ftcrobotcontroller.opmodes;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.GyroSensor;
 
-public abstract class Gyro extends LinearOpMode implements Runnable{
+public abstract class gyro extends LinearOpMode implements Runnable{
 
     GyroSensor gyro;
 

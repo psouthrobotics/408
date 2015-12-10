@@ -3,7 +3,7 @@ package com.qualcomm.ftcrobotcontroller.opmodes;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.Range;
 
-public abstract class Drive extends Gyro {
+public abstract class Drive extends gyro {
     //drive motors
     DcMotor leftMotor;
     DcMotor rightMotor;
@@ -13,13 +13,16 @@ public abstract class Drive extends Gyro {
     //t is time x is direction
     public void go(double t, double x) throws InterruptedException{
         //assign hardware to objects
-        leftMotor = hardwareMap.dcMotor.get("left_Motor");
-        rightMotor = hardwareMap.dcMotor.get("right_Motor");
+        leftMotor = hardwareMap.dcMotor.get("right_Motor");
+        rightMotor = hardwareMap.dcMotor.get("left_Motor");
         leftTank = hardwareMap.dcMotor.get("left_tank");
         rightTank = hardwareMap.dcMotor.get("right_tank");
         //reversing because its on oppisite side
         rightMotor.setDirection(DcMotor.Direction.REVERSE);
-        rightTank.setDirection(DcMotor.Direction.REVERSE);
+        rightTank.setDirection(DcMotor.Direction.FORWARD);
+        leftTank.setDirection(DcMotor.Direction.REVERSE);
+        leftMotor.setDirection(DcMotor.Direction.FORWARD);
+
         //defining variables
         double kp;
         double ki;

@@ -19,6 +19,11 @@ public class AccelerometerOp extends OpMode implements SensorEventListener {
     private String startDate;
     private SensorManager mSensorManager;
     private Sensor accelerometer;
+    double vector;
+    double x;
+    double y;
+    double z;
+
 
     private float[] acceleration = {0.0f,0.0f,0.0f};    // SI units (m/s^2)
     //values[0]: Acceleration minus Gx on the x-axis
@@ -50,6 +55,11 @@ public class AccelerometerOp extends OpMode implements SensorEventListener {
         acceleration[0] = 0.0f;
         acceleration[1] = 0.0f;
         acceleration[2] = 0.0f;
+
+        x = 5;
+        y = 5;
+        z = 5;
+
     }
 
     /*
@@ -68,11 +78,9 @@ public class AccelerometerOp extends OpMode implements SensorEventListener {
     * This method will be called repeatedly in a loop
     * @see com.qualcomm.robotcore.eventloop.opmode.OpMode#loop()
     */
-    double vector;
-    double y;
-    double x;
-    double z;
+
     @Override
+
     public void loop() {
 //        telemetry.addData("1 Start", "AccelerometerOp started at " + startDate);
 //        telemetry.addData("2 units", "values in SI units (m/s^2)");
