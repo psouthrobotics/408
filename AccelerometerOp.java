@@ -91,9 +91,9 @@ public class AccelerometerOp extends OpMode implements SensorEventListener {
         vector = Math.sqrt((acceleration[0] * acceleration[0]) * (acceleration[1] * acceleration[1]) * (acceleration[2] * acceleration[2]));
         telemetry.addData("Vector Force", vector);
         //angle from x axis to vector
-        x = Math.acos(x/vector);
-        y = Math.acos(y/vector);
-        z = Math.acos(z/vector);
+        x = (x/vector);
+        y = (y/vector);
+        z = (z/vector);
         telemetry.addData("X angle", x);
         telemetry.addData("Y angle", y);
         telemetry.addData("Z angle", z);
