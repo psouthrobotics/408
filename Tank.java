@@ -36,6 +36,7 @@ public class Tank extends OpMode {
         leftMotor.setDirection(DcMotor.Direction.REVERSE );
         rightTank.setDirection(DcMotor.Direction.REVERSE);
         leftTank.setDirection(DcMotor.Direction.REVERSE);
+        rightMotor.setDirection(DcMotor.Direction.FORWARD);
 
 
     }
