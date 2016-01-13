@@ -52,15 +52,19 @@ public class Tank extends OpMode {
         //scale drive values for easier controling
         //expoL();
         //expoR();
-        //set drive values for motors
+        //set drive values for
+        double tankL = left/4;
+        double tankR = right/4;
         leftMotor.setPower(left);
         rightMotor.setPower(right);
-        leftTank.setPower(left);
-        rightTank.setPower(right);
+        leftTank.setPower(tankL);
+        rightTank.setPower(tankR);
 
-        //telemetry
+        //telemetryc vz
         telemetry.addData("Left Motor power", left);
 		telemetry.addData("Right Motor power", right);
+        telemetry.addData("Left Tank power", tankL);
+        telemetry.addData("Right Tank", tankR);
     }
     //scale left drive value
     public void expoL() {
