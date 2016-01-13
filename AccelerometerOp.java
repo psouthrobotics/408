@@ -16,10 +16,8 @@ import java.lang.Math;
  * An Op Mode that returns the raw Accelerometer sensor values as telemetry
  */
 public class AccelerometerOp extends OpMode implements SensorEventListener {
-    private String startDate;
     private SensorManager mSensorManager;
     private Sensor accelerometer;
-    double vector;
     double x;
     double y;
     double z;
@@ -68,7 +66,6 @@ public class AccelerometerOp extends OpMode implements SensorEventListener {
     */
     @Override
     public void start() {
-        startDate = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date());
 
         // delay value is SENSOR_DELAY_UI which is ok for telemetry, maybe not for actual robot use
         mSensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_UI);
@@ -87,16 +84,6 @@ public class AccelerometerOp extends OpMode implements SensorEventListener {
         telemetry.addData("x-axis",  acceleration[0]);
         telemetry.addData("y-axis",  acceleration[1]);
         telemetry.addData("z-axis",  acceleration[2]);
-        //this solves for the force vector;
-        vector = Math.sqrt((acceleration[0] * acceleration[0]) * (acceleration[1] * acceleration[1]) * (acceleration[2] * acceleration[2]));
-        telemetry.addData("Vector Force", vector);
-        //angle from x axis to vector
-        x = (x/vector);
-        y = (y/vector);
-        z = (z/vector);
-        telemetry.addData("X angle", x);
-        telemetry.addData("Y angle", y);
-        telemetry.addData("Z angle", z);
 
     }
 

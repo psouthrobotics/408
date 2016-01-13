@@ -1,14 +1,18 @@
 package com.qualcomm.ftcrobotcontroller.opmodes;
 
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.Range;
+import com.qualcomm.robotcore.hardware.GyroSensor;
 
-public abstract class Drive extends gyro {
+
+public abstract class Drive extends LinearOpMode {
     //drive motors
     DcMotor leftMotor;
     DcMotor rightMotor;
     DcMotor leftTank;
     DcMotor rightTank;
+    GyroSensor gyro;
 
     //t is time x is direction
     public void go(double t, double x) throws InterruptedException{
@@ -17,6 +21,7 @@ public abstract class Drive extends gyro {
         rightMotor = hardwareMap.dcMotor.get("left_Motor");
         leftTank = hardwareMap.dcMotor.get("left_tank");
         rightTank = hardwareMap.dcMotor.get("right_tank");
+        gyro = hardwareMap.gyroSensor.get("gy");
         //reversing because its on oppisite side
         rightMotor.setDirection(DcMotor.Direction.REVERSE);
         rightTank.setDirection(DcMotor.Direction.FORWARD);
@@ -41,7 +46,7 @@ public abstract class Drive extends gyro {
         double angle;
         double degrees;
         //setting straight value
-        straight =  cal_straight + x;
+        straight = 600 + x;
         //setting drive speed
         ld_speed = 0.8;
         rd_speed = 0.8;
@@ -64,10 +69,8 @@ public abstract class Drive extends gyro {
             rightMotor.setPower(rd_speed);
             leftTank.setPower(ld_speed);
             rightTank.setPower(rd_speed);
-            //error is the rotaion error
-            degrees = gyro.getRotation() - cal_straight;
-            angle = angle + degrees * (dt/1000);
 
+            angle = angle + gyro.getRotation()/dt;
             error = straight - gyro.getRotation();
             //dividing errror because motor speed is in percentage
             error = error / 200;
@@ -86,13 +89,16 @@ public abstract class Drive extends gyro {
             rd_speed = Range.clip(rd_speed, 0, 1);
             leftMotor.setPower(ld_speed);
             rightMotor.setPower(rd_speed);
+            leftTank.setPower(ld_speed);
+            rightTank.setPower(rd_speed);
             //setting vlues for next loop
             previous_error = error;
             //telemetry stuff
-            telemetry.addData("pro", proportional);
-            telemetry.addData("int", intergral);
-            telemetry.addData("der", derivitive);
+            telemetry.addData("Left Drive", ld_speed);
+            telemetry.addData("Right Drive", rd_speed);
+            telemetry.addData("Rotation", gyro.getRotation());
             telemetry.addData("Angle", angle);
+
             sleep(dt);
         }
 
