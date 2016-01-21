@@ -2,31 +2,34 @@ package com.qualcomm.ftcrobotcontroller.opmodes;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 import com.qualcomm.robotcore.hardware.GyroSensor;
 
 
 public abstract class Drive extends LinearOpMode {
-    //drive motors
     DcMotor leftMotor;
     DcMotor rightMotor;
     DcMotor leftTank;
     DcMotor rightTank;
-    GyroSensor gyro;
+    Servo servo;
 
+    GyroSensor gyro;
     //t is time x is direction
     public void go(double t, double x) throws InterruptedException{
         //assign hardware to objects
-        leftMotor = hardwareMap.dcMotor.get("right_Motor");
-        rightMotor = hardwareMap.dcMotor.get("left_Motor");
+        leftMotor = hardwareMap.dcMotor.get("left_Motor");
+        rightMotor = hardwareMap.dcMotor.get("right_Motor");
         leftTank = hardwareMap.dcMotor.get("left_tank");
         rightTank = hardwareMap.dcMotor.get("right_tank");
         gyro = hardwareMap.gyroSensor.get("gy");
-        //reversing because its on oppisite side
+        servo = hardwareMap.servo.get("servo");
+        //reversing motors as needed
         rightMotor.setDirection(DcMotor.Direction.REVERSE);
         rightTank.setDirection(DcMotor.Direction.FORWARD);
-        leftTank.setDirection(DcMotor.Direction.REVERSE);
+        leftTank.setDirection(DcMotor.Direction.FORWARD);
         leftMotor.setDirection(DcMotor.Direction.FORWARD);
+
 
         //defining variables
         double kp;
@@ -44,36 +47,38 @@ public abstract class Drive extends LinearOpMode {
         long dt;
         double PID;
         double angle;
-        double degrees;
         //setting straight value
-        straight = 600 + x;
+        //below is left above is right
+        straight = 584 + x;
         //setting drive speed
-        ld_speed = 0.8;
-        rd_speed = 0.8;
+        ld_speed = 0.5;
+        rd_speed = 0.5;
         //how often to run the loop
         dt = 20;
         //coefficients for PID loop
-        kp = 1.5;
-        ki = 3;
-        kd = 6;
+        kp = 0.005;
+        ki = 0.00025;
+        kd = 0;
         //start time to compare against
         start_time = System.currentTimeMillis();
         //setting variables to zero to use in first loop round
         intergral = 0;
         previous_error = 0;
-
         angle = 0;
 
-        while (System.currentTimeMillis() - start_time < t) {
-            leftMotor.setPower(ld_speed);
-            rightMotor.setPower(rd_speed);
-            leftTank.setPower(ld_speed);
-            rightTank.setPower(rd_speed);
+        leftMotor.setPower(ld_speed);
+        rightMotor.setPower(rd_speed);
+        leftTank.setPower(ld_speed);
+        rightTank.setPower(rd_speed);
+        telemetry.addData("Begining ", "Loop");
 
+        sleep(500);
+        while (System.currentTimeMillis() - start_time < t) {
+            servo.setPosition(0.5);
             angle = angle + gyro.getRotation()/dt;
             error = straight - gyro.getRotation();
             //dividing errror because motor speed is in percentage
-            error = error / 200;
+            error = error / 1000;
             //proportional which is just error
             proportional = error;
             //intergral art of loop- error over time
@@ -91,6 +96,7 @@ public abstract class Drive extends LinearOpMode {
             rightMotor.setPower(rd_speed);
             leftTank.setPower(ld_speed);
             rightTank.setPower(rd_speed);
+
             //setting vlues for next loop
             previous_error = error;
             //telemetry stuff
@@ -106,7 +112,21 @@ public abstract class Drive extends LinearOpMode {
     public void halt(){
         leftMotor.setPower(0);
         rightMotor.setPower(0);
+        leftTank.setPower(0);
+        rightTank.setPower(0);
     }
+    /*public double gyroCal() throws InterruptedException{
+        telemetry.addData("Calibrating Gyro", "Taking First Sample");
+        double sample1;
+        sample1 = gyro.getRotation();
+        telemetry.addData("Calibrating Gyro", "Taking Second Sample");
+        double sample2;
+        sample2 = gyro.getRotation();
+        telemetry.addData("Calibrating Gyro", "Both Samples taken");
+        double calStraight = (sample1 + sample2) / 2;
+        return calStraight;
+    }
+    */
 }
 
 
