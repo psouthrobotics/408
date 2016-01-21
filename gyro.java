@@ -3,10 +3,10 @@ package com.qualcomm.ftcrobotcontroller.opmodes;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.GyroSensor;
 
-public abstract class gyro extends LinearOpMode implements Runnable{
+public abstract class gyro extends LinearOpMode{
 
-    GyroSensor gyro;
-
+    GyroSensor gyro = hardwareMap.gyroSensor.get("gy");
+/*
     double a;
     double b;
     double c;
@@ -33,34 +33,26 @@ public abstract class gyro extends LinearOpMode implements Runnable{
     double x;
     double y;
     double z;
-    double degrees;
-    public double angle;
     //calibrated straight value;
     public double cal_straight;
-
-    //keeps trak of gyro angle in seperate thread
-    public void run() {
-        long dt = 2;
-        angle = 0;
-        while (true){
-            //ratioan in degrees per a second about the z axis of robot
-            degrees =  gyro.getRotation() - cal_straight;
-            try{
-                Thread.sleep(dt);
-            }
-            catch (InterruptedException e){
-            }
-
-        }
+*/
+    public void gyroCal() throws InterruptedException{
+        telemetry.addData("Taking", " Sample One");
+        double sample1 = gyro.getRotation();
+        telemetry.addData("Calibrating Gyro, Sample 1 = ", sample1);
+        sleep(500);
+        telemetry.addData("Taking", " Sample One");
+        double sample2 = gyro.getRotation();
+        telemetry.addData("Calibrating Gyro, Sample 2 = ", sample2);
+        double calStraight = (sample1 + sample2)/2;
+        telemetry.addData("Calibration", " Complete");
+        telemetry.addData("Calibrated Gyro Straight ", calStraight);
 
     }
-    public double get_angle(){
-        return angle;
-    }
-
-    public void gyro_cal() throws InterruptedException{
+    /*public void gyro_cal() throws InterruptedException{
         a = gyro.getRotation();
         sleep(20);
+        telemetry.addData("Calibrating", " Gyro");
         b = gyro.getRotation();
         sleep(20);
         c = gyro.getRotation();
@@ -68,6 +60,7 @@ public abstract class gyro extends LinearOpMode implements Runnable{
         d = gyro.getRotation();
         sleep(20);
         e = gyro.getRotation();
+        telemetry.addData("Calibrating", " Gyro");
         sleep(20);
         f = gyro.getRotation();
         sleep(20);
@@ -93,6 +86,7 @@ public abstract class gyro extends LinearOpMode implements Runnable{
         sleep(20);
         q = gyro.getRotation();
         sleep(20);
+        telemetry.addData("Calibrating", " Gyro");
         r = gyro.getRotation();
         sleep(20);
         s = gyro.getRotation();
@@ -108,11 +102,13 @@ public abstract class gyro extends LinearOpMode implements Runnable{
         x = gyro.getRotation();
         sleep(20);
         y = gyro.getRotation();
+        telemetry.addData("Calibrating", " Gyro");
         sleep(20);
         z = gyro.getRotation();
         sleep(20);
-
+        telemetry.addData("Calibration", " Complete");
         cal_straight = (a + b + c + d + e + f + g + h + i + j + k +l + m + n + o + p + q + r + s + t + u + v + w + x + y + z) / 26;
-
+        telemetry.addData("Straight: ", cal_straight);
     }
+    */
 }

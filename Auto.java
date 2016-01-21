@@ -7,11 +7,11 @@ import com.qualcomm.robotcore.hardware.DcMotor;
  * Created by robotics on 12/8/15.
  */
 public class Auto extends Drive {
-
     public void runOpMode() throws InterruptedException {
         waitForStart();
-        go(10000, 0);
+        while(opModeIsActive()){
+            go(100000, 0);
+        }
         halt();
-
     }
 }
