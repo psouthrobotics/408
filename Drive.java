@@ -49,16 +49,16 @@ public abstract class Drive extends LinearOpMode {
         double angle;
         //setting straight value
         //below is left above is right
-        straight = 584 + x;
+        straight = 575 + x;
         //setting drive speed
-        ld_speed = 0.5;
-        rd_speed = 0.5;
+        ld_speed = 0.6;
+        rd_speed = 0.6;
         //how often to run the loop
         dt = 20;
         //coefficients for PID loop
         kp = 0.005;
-        ki = 0.00025;
-        kd = 0;
+        ki = 0.0025;
+        kd = 6;
         //start time to compare against
         start_time = System.currentTimeMillis();
         //setting variables to zero to use in first loop round
@@ -74,7 +74,6 @@ public abstract class Drive extends LinearOpMode {
 
         sleep(500);
         while (System.currentTimeMillis() - start_time < t) {
-            servo.setPosition(0.5);
             angle = angle + gyro.getRotation()/dt;
             error = straight - gyro.getRotation();
             //dividing errror because motor speed is in percentage
@@ -86,7 +85,7 @@ public abstract class Drive extends LinearOpMode {
             //derivitive which uses slope to correct future error
             derivitive = (error - previous_error) / dt;
             //suming together to create complete correction value
-            PID = kp * proportional + ki * intergral + kd * derivitive;
+            PID = kp * (proportional + ki * intergral + kd * derivitive);
             //applying corrections to driving
             ld_speed = ld_speed + PID;
             rd_speed = rd_speed - PID;
