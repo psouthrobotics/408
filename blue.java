@@ -13,6 +13,11 @@ public class blue extends Drive {
         //straight is 600
         go(1500, 0);
         go(4000, -400);
+        leftTank.setPower(0.5);
+        leftMotor.setPower(0.5);
+        rightTank.setPower(0.5);
+        rightMotor.setPower(0.5);
+        sleep(27200);
         halt();
 
 
