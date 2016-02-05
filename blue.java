@@ -2,7 +2,7 @@ package com.qualcomm.ftcrobotcontroller.opmodes;
 
 //TO DO
 //29in/s
-public class blue extends DriveWithoutEncoders {
+public class Blue extends DriveWithoutEncoders {
 
 
     @Override

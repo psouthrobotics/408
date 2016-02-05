@@ -4,7 +4,7 @@ package com.qualcomm.ftcrobotcontroller.opmodes;
 /**
  * Created by robotics on 12/8/15.
  */
-public class Auto extends Drive {
+public class Auto extends DriveWithoutEncoders {
     public void runOpMode() throws InterruptedException {
 
         waitForStart();
