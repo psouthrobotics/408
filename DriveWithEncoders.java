@@ -2,33 +2,31 @@ package com.qualcomm.ftcrobotcontroller.opmodes;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorController;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
-import com.qualcomm.robotcore.hardware.GyroSensor;
 
-
-public abstract class Drive extends LinearOpMode {
+public abstract class DriveWithEncoders extends LinearOpMode {
     DcMotor leftMotor;
     DcMotor rightMotor;
     DcMotor leftTank;
     DcMotor rightTank;
     Servo servo;
-
-    GyroSensor gyro;
-    //t is time x is direction
-    public void go(double t, double x) throws InterruptedException{
+    //d is distance t is turning degree
+    public void go(double d, double t) throws InterruptedException{
         //assign hardware to objects
         leftMotor = hardwareMap.dcMotor.get("left_Motor");
         rightMotor = hardwareMap.dcMotor.get("right_Motor");
         leftTank = hardwareMap.dcMotor.get("left_tank");
         rightTank = hardwareMap.dcMotor.get("right_tank");
-        gyro = hardwareMap.gyroSensor.get("gy");
         servo = hardwareMap.servo.get("servo");
         //reversing motors as needed
         rightMotor.setDirection(DcMotor.Direction.REVERSE);
         rightTank.setDirection(DcMotor.Direction.FORWARD);
         leftTank.setDirection(DcMotor.Direction.FORWARD);
         leftMotor.setDirection(DcMotor.Direction.FORWARD);
+        leftMotor.setChannelMode(DcMotorController.RunMode.RUN_USING_ENCODERS);
+        rightMotor.setChannelMode(DcMotorController.RunMode.RUN_USING_ENCODERS);
 
 
         //defining variables
@@ -40,16 +38,11 @@ public abstract class Drive extends LinearOpMode {
         double proportional;
         double intergral;
         double derivitive;
-        double start_time;
         double ld_speed;
         double rd_speed;
-        double straight;
         long dt;
         double PID;
-        double angle;
-        //setting straight value
-        //below is left above is right
-        straight = 575 + x;
+        double targetTicks;
         //setting drive speed
         ld_speed = 0.6;
         rd_speed = 0.6;
@@ -59,25 +52,22 @@ public abstract class Drive extends LinearOpMode {
         kp = 0.005;
         ki = 0.0025;
         kd = 6;
-        //start time to compare against
-        start_time = System.currentTimeMillis();
         //setting variables to zero to use in first loop round
         intergral = 0;
         previous_error = 0;
-        angle = 0;
-
+        //converting distance to rpm
+        double r = d / 12.56636;
+        //converting rpm to ticks on the encoder
+        targetTicks = 1440 * r;
         leftMotor.setPower(ld_speed);
         rightMotor.setPower(rd_speed);
-        leftTank.setPower(ld_speed);
-        rightTank.setPower(rd_speed);
         telemetry.addData("Begining ", "Loop");
 
         sleep(500);
-        while (System.currentTimeMillis() - start_time < t) {
-            angle = angle + gyro.getRotation()/dt;
-            error = straight - gyro.getRotation();
-            //dividing errror because motor speed is in percentage
-            error = error / 1000;
+        while ((leftMotor.getCurrentPosition() < targetTicks) & (rightMotor.getCurrentPosition() < targetTicks)) {
+            //error needs to be positive when turning left
+            error = (rightMotor.getCurrentPosition() - leftMotor.getCurrentPosition()) - t;
+            error /= 1000;
             //proportional which is just error
             proportional = error;
             //intergral art of loop- error over time
@@ -93,16 +83,12 @@ public abstract class Drive extends LinearOpMode {
             rd_speed = Range.clip(rd_speed, 0, 1);
             leftMotor.setPower(ld_speed);
             rightMotor.setPower(rd_speed);
-            leftTank.setPower(ld_speed);
-            rightTank.setPower(rd_speed);
 
             //setting vlues for next loop
             previous_error = error;
             //telemetry stuff
             telemetry.addData("Left Drive", ld_speed);
             telemetry.addData("Right Drive", rd_speed);
-            telemetry.addData("Rotation", gyro.getRotation());
-            telemetry.addData("Angle", angle);
 
             sleep(dt);
         }
